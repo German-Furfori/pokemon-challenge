@@ -1,6 +1,7 @@
 package com.truelayer.pokeapp.controller;
 
 import com.truelayer.pokeapp.PokeappApplicationTests;
+import com.truelayer.pokeapp.exception.PokeApiNotFoundException;
 import com.truelayer.pokeapp.webclient.PokeApiWebClient;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,5 +46,21 @@ public class PokeControllerTest extends PokeappApplicationTests {
         assertEquals("pikachu", argumentCaptorName.getValue());
 
         verify(pokeApiWebClient, times(1)).getPokemonInfo(argumentCaptorName.getValue());
+    }
+
+    @Test
+    @SneakyThrows
+    void findPokemonInfo_withCorrectFields_returnNotFound() {
+        given(pokeApiWebClient.getPokemonInfo(any(String.class)))
+                .willThrow(new PokeApiNotFoundException("Pokemon Not Found"));
+
+        mockMvc.perform(get(pathPokemon, DEFAULT_POKEMON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").exists())
+                .andExpect(jsonPath("$.description").exists())
+                .andExpect(jsonPath("$.code").value("404 NOT_FOUND"))
+                .andExpect(jsonPath("$.description").value("Pokemon Not Found"));
+
+        verify(pokeApiWebClient, times(1)).getPokemonInfo(any(String.class));
     }
 }
