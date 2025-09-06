@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.reactive.function.client.WebClientException;
 import reactor.core.publisher.Mono;
 
 import static com.truelayer.pokeapp.constant.ErrorMessages.NON_EXISTING_POKEMON;
@@ -34,7 +34,7 @@ public class PokeApiWebClient {
                     )
                     .bodyToMono(PokeApiResponseDto.class)
                     .block();
-        } catch (WebClientResponseException ex) {
+        } catch (WebClientException ex) {
             throw new PokeApiGenericException(ex.getMessage());
         }
     }

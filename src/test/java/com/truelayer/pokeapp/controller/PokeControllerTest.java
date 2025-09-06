@@ -1,6 +1,7 @@
 package com.truelayer.pokeapp.controller;
 
 import com.truelayer.pokeapp.PokeappApplicationTests;
+import com.truelayer.pokeapp.exception.PokeApiGenericException;
 import com.truelayer.pokeapp.exception.PokeApiNotFoundException;
 import com.truelayer.pokeapp.webclient.PokeApiWebClient;
 import lombok.SneakyThrows;
@@ -60,6 +61,22 @@ public class PokeControllerTest extends PokeappApplicationTests {
                 .andExpect(jsonPath("$.description").exists())
                 .andExpect(jsonPath("$.code").value("404 NOT_FOUND"))
                 .andExpect(jsonPath("$.description").value("Pokemon Not Found"));
+
+        verify(pokeApiWebClient, times(1)).getPokemonInfo(any(String.class));
+    }
+
+    @Test
+    @SneakyThrows
+    void findPokemonInfo_withCorrectFields_returnInternalError() {
+        given(pokeApiWebClient.getPokemonInfo(any(String.class)))
+                .willThrow(new PokeApiGenericException("Error"));
+
+        mockMvc.perform(get(pathPokemon, DEFAULT_POKEMON))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.code").exists())
+                .andExpect(jsonPath("$.description").exists())
+                .andExpect(jsonPath("$.code").value("500 INTERNAL_SERVER_ERROR"))
+                .andExpect(jsonPath("$.description").value("Internal Error: Error"));
 
         verify(pokeApiWebClient, times(1)).getPokemonInfo(any(String.class));
     }
