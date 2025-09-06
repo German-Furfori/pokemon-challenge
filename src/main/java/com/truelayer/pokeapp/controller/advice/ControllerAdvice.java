@@ -24,12 +24,10 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(PokeApiGenericException.class)
-    public ResponseEntity<ErrorResponseDto> pokeApiGenericExceptionHandler(PokeApiGenericException exception) {
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponseDto pokeApiGenericExceptionHandler(PokeApiGenericException exception) {
         log.error("[ControllerAdvice] pokeApiGenericExceptionHandler, exception: [{}]", exception.getMessage());
-        ErrorResponseDto errorResponse = this.generateError(exception.getStatus(), exception.getMessage());
-        return ResponseEntity
-                .status(exception.getStatus())
-                .body(errorResponse);
+        return this.generateError(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
     }
 
     private ErrorResponseDto generateError(HttpStatusCode status, String description) {

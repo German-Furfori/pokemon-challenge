@@ -35,7 +35,7 @@ public class PokeApiWebClient {
                     .bodyToMono(PokeApiResponseDto.class)
                     .block();
         } catch (WebClientResponseException ex) {
-            throw new PokeApiGenericException(ex.getMessage(), ex.getStatusCode());
+            throw new PokeApiGenericException(ex.getMessage());
         }
     }
 }
