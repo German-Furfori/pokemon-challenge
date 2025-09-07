@@ -2,6 +2,8 @@ package com.truelayer.pokeapp.service;
 
 import com.truelayer.pokeapp.dto.api.PokeInfoResponseDto;
 import com.truelayer.pokeapp.dto.poke.PokeApiResponseDto;
+import com.truelayer.pokeapp.exception.PokeApiGenericException;
+import com.truelayer.pokeapp.exception.PokeApiNotFoundException;
 import com.truelayer.pokeapp.mapper.PokeMapper;
 import com.truelayer.pokeapp.service.impl.PokeServiceImpl;
 import com.truelayer.pokeapp.webclient.PokeApiWebClient;
@@ -19,6 +21,9 @@ import static com.truelayer.pokeapp.util.TestUtils.getPokeApiResponse;
 import static com.truelayer.pokeapp.util.TestUtils.getPokeInfoResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,7 +38,7 @@ public class PokeServiceTest {
     private PokeServiceImpl pokeService;
 
     @Test
-    void testFindPokemonInfo_ShouldReturnMappedResponse() {
+    void findPokemonInfo_shouldReturnMappedResponse() {
         PokeApiResponseDto mockApiResponse = getPokeApiResponse(DEFAULT_DESCRIPTION, DEFAULT_HABITAT, DEFAULT_IS_LEGENDARY);
         PokeInfoResponseDto expectedResponse = getPokeInfoResponse(DEFAULT_POKEMON, DEFAULT_DESCRIPTION, DEFAULT_HABITAT, DEFAULT_IS_LEGENDARY);
 
@@ -48,5 +53,31 @@ public class PokeServiceTest {
 
         verify(pokeApiWebClient, times(1)).getPokemonInfo(DEFAULT_POKEMON);
         verify(pokeMapper, times(1)).fromPokeApiResponseToPokeInfoResponse(DEFAULT_POKEMON, mockApiResponse);
+    }
+
+    @Test
+    void findPokemonInfo_notFoundExceptionFromPokeApi() {
+        when(pokeApiWebClient.getPokemonInfo(DEFAULT_POKEMON))
+                .thenThrow(new PokeApiNotFoundException("Not Found"));
+
+        PokeApiNotFoundException ex = assertThrows(PokeApiNotFoundException.class, () -> pokeService.findPokemonInfo(DEFAULT_POKEMON));
+
+        assertEquals("Not Found", ex.getMessage());
+
+        verify(pokeApiWebClient, times(1)).getPokemonInfo(DEFAULT_POKEMON);
+        verify(pokeMapper, never()).fromPokeApiResponseToPokeInfoResponse(any(), any());
+    }
+
+    @Test
+    void findPokemonInfo_genericExceptionFromPokeApi() {
+        when(pokeApiWebClient.getPokemonInfo(DEFAULT_POKEMON))
+                .thenThrow(new PokeApiGenericException("Error"));
+
+        PokeApiGenericException ex = assertThrows(PokeApiGenericException.class, () -> pokeService.findPokemonInfo(DEFAULT_POKEMON));
+
+        assertEquals("Internal Error: Error", ex.getMessage());
+
+        verify(pokeApiWebClient, times(1)).getPokemonInfo(DEFAULT_POKEMON);
+        verify(pokeMapper, never()).fromPokeApiResponseToPokeInfoResponse(any(), any());
     }
 }

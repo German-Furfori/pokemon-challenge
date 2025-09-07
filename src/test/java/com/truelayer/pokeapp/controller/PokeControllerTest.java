@@ -84,4 +84,24 @@ public class PokeControllerTest extends PokeappApplicationTests {
 
         verify(pokeApiWebClient, times(1)).getPokemonInfo(any(String.class));
     }
+
+    @Test
+    @SneakyThrows
+    void findPokemonInfo_withCorrectFields_returnPokemonInfoWithDefaultDescription() {
+        given(pokeApiWebClient.getPokemonInfo(any(String.class)))
+                .willReturn(getPokeApiResponse(null, DEFAULT_HABITAT, DEFAULT_IS_LEGENDARY));
+
+        mockMvc.perform(get(pathPokemon, DEFAULT_POKEMON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").exists())
+                .andExpect(jsonPath("$.description").exists())
+                .andExpect(jsonPath("$.habitat").exists())
+                .andExpect(jsonPath("$.isLegendary").exists())
+                .andExpect(jsonPath("$.name").value("pikachu"))
+                .andExpect(jsonPath("$.description").value("No description found"))
+                .andExpect(jsonPath("$.habitat").value("habitat"))
+                .andExpect(jsonPath("$.isLegendary").value(false));
+
+        verify(pokeApiWebClient, times(1)).getPokemonInfo(any(String.class));
+    }
 }
