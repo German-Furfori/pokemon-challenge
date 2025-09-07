@@ -12,7 +12,7 @@ public class TestUtils {
         flavorDto.setFlavorText(flavor);
 
         HabitatDto habitatDto = new HabitatDto();
-        habitatDto.setName("Habitat name");
+        habitatDto.setName(habitat);
 
         PokeApiResponseDto pokeApiResponseDto = new PokeApiResponseDto();
         pokeApiResponseDto.setHabitat(habitatDto);

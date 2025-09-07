@@ -44,8 +44,8 @@ public class PokeControllerTest extends PokeappApplicationTests {
                 .andExpect(jsonPath("$.habitat").exists())
                 .andExpect(jsonPath("$.isLegendary").exists())
                 .andExpect(jsonPath("$.name").value("pikachu"))
-                .andExpect(jsonPath("$.description").value("Pokemon description"))
-                .andExpect(jsonPath("$.habitat").value("Habitat name"))
+                .andExpect(jsonPath("$.description").value("description"))
+                .andExpect(jsonPath("$.habitat").value("habitat"))
                 .andExpect(jsonPath("$.isLegendary").value(false));
 
         assertEquals("pikachu", argumentCaptorName.getValue());
