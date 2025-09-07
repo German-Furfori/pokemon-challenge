@@ -9,6 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import static com.truelayer.pokeapp.constant.DefaultValues.DEFAULT_DESCRIPTION;
+import static com.truelayer.pokeapp.constant.DefaultValues.DEFAULT_HABITAT;
+import static com.truelayer.pokeapp.constant.DefaultValues.DEFAULT_IS_LEGENDARY;
+import static com.truelayer.pokeapp.constant.DefaultValues.DEFAULT_POKEMON;
+import static com.truelayer.pokeapp.util.TestUtils.getPokeApiResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -23,7 +28,6 @@ public class PokeControllerTest extends PokeappApplicationTests {
     @MockitoBean
     private PokeApiWebClient pokeApiWebClient;
     private final String pathPokemon = "/pokemon/{name}";
-    private static final String DEFAULT_POKEMON = "pikachu";
 
     @Test
     @SneakyThrows
@@ -31,7 +35,7 @@ public class PokeControllerTest extends PokeappApplicationTests {
         ArgumentCaptor<String> argumentCaptorName = ArgumentCaptor.forClass(String.class);
 
         given(pokeApiWebClient.getPokemonInfo(argumentCaptorName.capture()))
-                .willReturn(this.getPokeApiResponse());
+                .willReturn(getPokeApiResponse(DEFAULT_DESCRIPTION, DEFAULT_HABITAT, DEFAULT_IS_LEGENDARY));
 
         mockMvc.perform(get(pathPokemon, DEFAULT_POKEMON))
                 .andExpect(status().isOk())
