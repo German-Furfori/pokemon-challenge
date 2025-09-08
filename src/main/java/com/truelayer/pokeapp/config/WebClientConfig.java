@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
@@ -18,6 +19,7 @@ public class WebClientConfig {
     public WebClient webClientPokeApi() {
         return WebClient.builder()
                 .baseUrl(pokeApiUri)
+                .filter(this.logRequest())
                 .build();
     }
 
@@ -25,6 +27,14 @@ public class WebClientConfig {
     public WebClient webClientTranslation() {
         return WebClient.builder()
                 .baseUrl(translationUri)
+                .filter(this.logRequest())
                 .build();
+    }
+
+    private ExchangeFilterFunction logRequest() {
+        return (clientRequest, next) -> {
+            log.info("Request: {} {}", clientRequest.method(), clientRequest.url());
+            return next.exchange(clientRequest);
+        };
     }
 }
