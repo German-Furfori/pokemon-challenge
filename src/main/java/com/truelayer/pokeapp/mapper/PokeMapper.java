@@ -3,8 +3,10 @@ package com.truelayer.pokeapp.mapper;
 import com.truelayer.pokeapp.dto.api.PokeInfoResponseDto;
 import com.truelayer.pokeapp.dto.poke.FlavorDto;
 import com.truelayer.pokeapp.dto.poke.PokeApiResponseDto;
+import com.truelayer.pokeapp.dto.translation.TranslateResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import java.util.List;
 import java.util.Objects;
@@ -28,4 +30,8 @@ public interface PokeMapper {
                 .map(text -> text.replaceAll("[\\n\\f]+", " "))
                 .orElse(NO_DESCRIPTION_FOUND);
     }
+
+    @Mapping(target = "description", source = "contents.translated")
+    void updatePokemonDescription(TranslateResponseDto translateResponse,
+                                                    @MappingTarget PokeInfoResponseDto pokeInfoResponse);
 }
