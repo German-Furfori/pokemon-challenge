@@ -21,4 +21,9 @@ public class PokeServiceImpl implements PokeService {
         PokeApiResponseDto pokeApiResponse = pokeApiWebClient.getPokemonInfo(name);
         return pokeMapper.fromPokeApiResponseToPokeInfoResponse(name, pokeApiResponse);
     }
+
+    @Override
+    public PokeInfoResponseDto findPokemonTranslatedInfo(String name) {
+        return this.findPokemonInfo(name);
+    }
 }

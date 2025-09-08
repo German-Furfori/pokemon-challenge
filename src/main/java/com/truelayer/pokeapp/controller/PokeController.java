@@ -27,4 +27,13 @@ public class PokeController {
         log.info("[PokeController] findPokemonInfo response: [{}]", pokemonInfo);
         return pokemonInfo;
     }
+
+    @GetMapping(path = "/translated/{name}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ResponseStatus(value = HttpStatus.OK)
+    public PokeInfoResponseDto findPokemonTranslatedInfo(@PathVariable String name) {
+        log.info("[PokeController] findPokemonTranslatedInfo request: [{}]", name);
+        PokeInfoResponseDto pokemonInfo = pokeService.findPokemonTranslatedInfo(name);
+        log.info("[PokeController] findPokemonTranslatedInfo response: [{}]", pokemonInfo);
+        return pokemonInfo;
+    }
 }
