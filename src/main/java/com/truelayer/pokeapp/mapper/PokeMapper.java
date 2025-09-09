@@ -24,7 +24,7 @@ public interface PokeMapper {
     @Named(value = "mapDescription")
     default String mapDescription(List<FlavorDto> flavorTextEntries) {
         return flavorTextEntries.stream()
-                .filter(Objects::nonNull)
+                .filter(flavor -> flavor.getFlavorText() != null)
                 .filter(flavor -> "en".equals(flavor.getLanguage().getName()))
                 .findFirst()
                 .map(FlavorDto::getFlavorText)

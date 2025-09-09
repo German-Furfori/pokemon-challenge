@@ -3,13 +3,18 @@ package com.truelayer.pokeapp.util;
 import com.truelayer.pokeapp.dto.api.PokeInfoResponseDto;
 import com.truelayer.pokeapp.dto.poke.FlavorDto;
 import com.truelayer.pokeapp.dto.poke.HabitatDto;
+import com.truelayer.pokeapp.dto.poke.LanguageDto;
 import com.truelayer.pokeapp.dto.poke.PokeApiResponseDto;
 import java.util.List;
 
 public class TestUtils {
     public static PokeApiResponseDto getPokeApiResponse(String flavor, String habitat, Boolean isLegendary) {
+        LanguageDto languageDto = new LanguageDto();
+        languageDto.setName("en");
+
         FlavorDto flavorDto = new FlavorDto();
         flavorDto.setFlavorText(flavor);
+        flavorDto.setLanguage(languageDto);
 
         HabitatDto habitatDto = new HabitatDto();
         habitatDto.setName(habitat);
