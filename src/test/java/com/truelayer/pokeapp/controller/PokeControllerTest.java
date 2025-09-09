@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.truelayer.pokeapp.constant.DefaultValues.DEFAULT_DESCRIPTION;
@@ -172,5 +173,19 @@ public class PokeControllerTest extends PokeappApplicationTests {
         mockMvc.perform(get(pathTranslatedPokemon, DEFAULT_POKEMON));
 
         assertEquals(translationType, argumentCaptorTranslationType.getValue());
+    }
+
+    @Test
+    @SneakyThrows
+    void findPokemonTranslatedInfo_withNoTranslateResponse_returnPokemonStandardInfo() {
+        given(pokeApiWebClient.getPokemonInfo(any(String.class)))
+                .willReturn(getPokeApiResponse(DEFAULT_DESCRIPTION, DEFAULT_HABITAT, DEFAULT_IS_LEGENDARY));
+        given(translationWebClient.translate(any(TranslateRequestDto.class), any(String.class)))
+                .willReturn(Optional.empty());
+
+        mockMvc.perform(get(pathTranslatedPokemon, DEFAULT_POKEMON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.description").exists())
+                .andExpect(jsonPath("$.description").value("description"));
     }
 }
