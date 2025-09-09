@@ -7,4 +7,5 @@ import lombok.Data;
 public class FlavorDto {
     @JsonProperty("flavor_text")
     private String flavorText;
+    private LanguageDto language;
 }

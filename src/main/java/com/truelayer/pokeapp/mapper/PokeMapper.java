@@ -25,6 +25,7 @@ public interface PokeMapper {
     default String mapDescription(List<FlavorDto> flavorTextEntries) {
         return flavorTextEntries.stream()
                 .filter(Objects::nonNull)
+                .filter(flavor -> "en".equals(flavor.getLanguage().getName()))
                 .findFirst()
                 .map(FlavorDto::getFlavorText)
                 .map(text -> text.replaceAll("[\\n\\f]+", " "))
