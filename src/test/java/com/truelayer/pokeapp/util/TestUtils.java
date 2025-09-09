@@ -5,7 +5,11 @@ import com.truelayer.pokeapp.dto.poke.FlavorDto;
 import com.truelayer.pokeapp.dto.poke.HabitatDto;
 import com.truelayer.pokeapp.dto.poke.LanguageDto;
 import com.truelayer.pokeapp.dto.poke.PokeApiResponseDto;
+import com.truelayer.pokeapp.dto.translation.ContentsDto;
+import com.truelayer.pokeapp.dto.translation.TranslateResponseDto;
+
 import java.util.List;
+import java.util.Optional;
 
 public class TestUtils {
     public static PokeApiResponseDto getPokeApiResponse(String flavor, String habitat, Boolean isLegendary) {
@@ -35,5 +39,15 @@ public class TestUtils {
         pokeInfoResponse.setIsLegendary(isLegendary);
 
         return pokeInfoResponse;
+    }
+
+    public static Optional<TranslateResponseDto> getTranslationResponse() {
+        ContentsDto contents = new ContentsDto();
+        contents.setTranslated("Translated description");
+
+        TranslateResponseDto translateResponse = new TranslateResponseDto();
+        translateResponse.setContents(contents);
+
+        return Optional.of(translateResponse);
     }
 }
