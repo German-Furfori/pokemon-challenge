@@ -4,4 +4,5 @@ import com.truelayer.pokeapp.dto.api.PokeInfoResponseDto;
 
 public interface PokeService {
     PokeInfoResponseDto findPokemonInfo(String name);
+    PokeInfoResponseDto findPokemonTranslatedInfo(String name);
 }

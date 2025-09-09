@@ -3,13 +3,23 @@ package com.truelayer.pokeapp.util;
 import com.truelayer.pokeapp.dto.api.PokeInfoResponseDto;
 import com.truelayer.pokeapp.dto.poke.FlavorDto;
 import com.truelayer.pokeapp.dto.poke.HabitatDto;
+import com.truelayer.pokeapp.dto.poke.LanguageDto;
 import com.truelayer.pokeapp.dto.poke.PokeApiResponseDto;
+import com.truelayer.pokeapp.dto.translation.ContentsDto;
+import com.truelayer.pokeapp.dto.translation.TranslateRequestDto;
+import com.truelayer.pokeapp.dto.translation.TranslateResponseDto;
+
 import java.util.List;
+import java.util.Optional;
 
 public class TestUtils {
     public static PokeApiResponseDto getPokeApiResponse(String flavor, String habitat, Boolean isLegendary) {
+        LanguageDto languageDto = new LanguageDto();
+        languageDto.setName("en");
+
         FlavorDto flavorDto = new FlavorDto();
         flavorDto.setFlavorText(flavor);
+        flavorDto.setLanguage(languageDto);
 
         HabitatDto habitatDto = new HabitatDto();
         habitatDto.setName(habitat);
@@ -30,5 +40,22 @@ public class TestUtils {
         pokeInfoResponse.setIsLegendary(isLegendary);
 
         return pokeInfoResponse;
+    }
+
+    public static Optional<TranslateResponseDto> getTranslationResponse() {
+        ContentsDto contents = new ContentsDto();
+        contents.setTranslated("Translated description");
+
+        TranslateResponseDto translateResponse = new TranslateResponseDto();
+        translateResponse.setContents(contents);
+
+        return Optional.of(translateResponse);
+    }
+
+    public static TranslateRequestDto getTranslateRequest(String text) {
+        TranslateRequestDto translateRequest = new TranslateRequestDto();
+        translateRequest.setText(text);
+
+        return translateRequest;
     }
 }
