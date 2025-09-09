@@ -23,6 +23,8 @@ import static com.truelayer.pokeapp.constant.DefaultValues.DEFAULT_DESCRIPTION;
 import static com.truelayer.pokeapp.constant.DefaultValues.DEFAULT_HABITAT;
 import static com.truelayer.pokeapp.constant.DefaultValues.DEFAULT_IS_LEGENDARY;
 import static com.truelayer.pokeapp.constant.DefaultValues.DEFAULT_POKEMON;
+import static com.truelayer.pokeapp.constant.DefaultValues.SHAKESPEARE_PATH;
+import static com.truelayer.pokeapp.constant.DefaultValues.YODA_PATH;
 import static com.truelayer.pokeapp.util.TestUtils.getPokeApiResponse;
 import static com.truelayer.pokeapp.util.TestUtils.getPokeInfoResponse;
 import static com.truelayer.pokeapp.util.TestUtils.getTranslationResponse;
@@ -48,10 +50,10 @@ public class PokeServiceTest {
 
     private static Stream<Arguments> provideDataForTranslationTypes() {
         return Stream.of(
-                Arguments.of("shakespeare", "habitat", false, getTranslationResponse().get(), 1),
-                Arguments.of("yoda", "cave", false, getTranslationResponse().get(), 1),
-                Arguments.of("yoda", "habitat", true, getTranslationResponse().get(), 1),
-                Arguments.of("yoda", "habitat", true, null, 0)
+                Arguments.of(SHAKESPEARE_PATH, DEFAULT_HABITAT, DEFAULT_IS_LEGENDARY, getTranslationResponse().get(), 1),
+                Arguments.of(YODA_PATH, "cave", DEFAULT_IS_LEGENDARY, getTranslationResponse().get(), 1),
+                Arguments.of(YODA_PATH, DEFAULT_HABITAT, true, getTranslationResponse().get(), 1),
+                Arguments.of(YODA_PATH, DEFAULT_HABITAT, true, null, 0)
         );
     }
 

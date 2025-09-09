@@ -6,6 +6,7 @@ import com.truelayer.pokeapp.dto.poke.HabitatDto;
 import com.truelayer.pokeapp.dto.poke.LanguageDto;
 import com.truelayer.pokeapp.dto.poke.PokeApiResponseDto;
 import com.truelayer.pokeapp.dto.translation.ContentsDto;
+import com.truelayer.pokeapp.dto.translation.TranslateRequestDto;
 import com.truelayer.pokeapp.dto.translation.TranslateResponseDto;
 
 import java.util.List;
@@ -49,5 +50,12 @@ public class TestUtils {
         translateResponse.setContents(contents);
 
         return Optional.of(translateResponse);
+    }
+
+    public static TranslateRequestDto getTranslateRequest(String text) {
+        TranslateRequestDto translateRequest = new TranslateRequestDto();
+        translateRequest.setText(text);
+
+        return translateRequest;
     }
 }
