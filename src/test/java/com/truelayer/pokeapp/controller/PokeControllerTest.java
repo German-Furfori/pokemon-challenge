@@ -8,8 +8,13 @@ import com.truelayer.pokeapp.webclient.PokeApiWebClient;
 import com.truelayer.pokeapp.webclient.TranslationWebClient;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+import java.util.stream.Stream;
 
 import static com.truelayer.pokeapp.constant.DefaultValues.DEFAULT_DESCRIPTION;
 import static com.truelayer.pokeapp.constant.DefaultValues.DEFAULT_HABITAT;
@@ -34,6 +39,14 @@ public class PokeControllerTest extends PokeappApplicationTests {
     private TranslationWebClient translationWebClient;
     private final String pathPokemon = "/pokemon/{name}";
     private final String pathTranslatedPokemon = "/pokemon/translated/{name}";
+
+    private static Stream<Arguments> provideDataForTranslationTypes() {
+        return Stream.of(
+                Arguments.of("shakespeare", "habitat", false),
+                Arguments.of("yoda", "cave", false),
+                Arguments.of("yoda", "habitat", true)
+        );
+    }
 
     @Test
     @SneakyThrows
@@ -143,5 +156,21 @@ public class PokeControllerTest extends PokeappApplicationTests {
         verify(pokeApiWebClient, times(1)).getPokemonInfo(argumentCaptorName.getValue());
         verify(translationWebClient, times(1)).translate(argumentCaptorTranslate.getValue(),
                 argumentCaptorTranslationType.getValue());
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideDataForTranslationTypes")
+    @SneakyThrows
+    void findPokemonTranslatedInfo_withSeveralPokemonTypes_verifyTranslationTypes(String translationType, String habitat, Boolean isLegendary) {
+        ArgumentCaptor<String> argumentCaptorTranslationType = ArgumentCaptor.forClass(String.class);
+
+        given(pokeApiWebClient.getPokemonInfo(any(String.class)))
+                .willReturn(getPokeApiResponse(DEFAULT_DESCRIPTION, habitat, isLegendary));
+        given(translationWebClient.translate(any(TranslateRequestDto.class), argumentCaptorTranslationType.capture()))
+                .willReturn(getTranslationResponse());
+
+        mockMvc.perform(get(pathTranslatedPokemon, DEFAULT_POKEMON));
+
+        assertEquals(translationType, argumentCaptorTranslationType.getValue());
     }
 }
