@@ -24,7 +24,6 @@ public class PokeApiWebClient {
 
     private final WebClient webClientPokeApi;
 
-    @Cacheable(value = "pokemon")
     public PokeApiResponseDto getPokemonInfo(String name) {
         try {
             return webClientPokeApi

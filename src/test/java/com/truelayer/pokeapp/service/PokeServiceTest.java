@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class PokeServiceTest {
     @Mock
-    private PokeApiWebClient pokeApiWebClient;
+    private PokeApiService pokeApiService;
     @Mock
     private PokeMapper pokeMapper;
     @Mock
@@ -62,7 +62,7 @@ public class PokeServiceTest {
         PokeApiResponseDto mockApiResponse = getPokeApiResponse(DEFAULT_DESCRIPTION, DEFAULT_HABITAT, DEFAULT_IS_LEGENDARY);
         PokeInfoResponseDto expectedResponse = getPokeInfoResponse(DEFAULT_POKEMON, DEFAULT_DESCRIPTION, DEFAULT_HABITAT, DEFAULT_IS_LEGENDARY);
 
-        when(pokeApiWebClient.getPokemonInfo(DEFAULT_POKEMON)).thenReturn(mockApiResponse);
+        when(pokeApiService.getPokemonInfo(DEFAULT_POKEMON)).thenReturn(mockApiResponse);
         when(pokeMapper.fromPokeApiResponseToPokeInfoResponse(DEFAULT_POKEMON, mockApiResponse))
                 .thenReturn(expectedResponse);
 
@@ -71,33 +71,33 @@ public class PokeServiceTest {
         assertNotNull(actualResponse);
         assertEquals(expectedResponse, actualResponse);
 
-        verify(pokeApiWebClient, times(1)).getPokemonInfo(DEFAULT_POKEMON);
+        verify(pokeApiService, times(1)).getPokemonInfo(DEFAULT_POKEMON);
         verify(pokeMapper, times(1)).fromPokeApiResponseToPokeInfoResponse(DEFAULT_POKEMON, mockApiResponse);
     }
 
     @Test
     void findPokemonInfo_notFoundExceptionFromPokeApi() {
-        when(pokeApiWebClient.getPokemonInfo(DEFAULT_POKEMON))
+        when(pokeApiService.getPokemonInfo(DEFAULT_POKEMON))
                 .thenThrow(new PokeApiNotFoundException("Not Found"));
 
         PokeApiNotFoundException ex = assertThrows(PokeApiNotFoundException.class, () -> pokeService.findPokemonInfo(DEFAULT_POKEMON));
 
         assertEquals("Not Found", ex.getMessage());
 
-        verify(pokeApiWebClient, times(1)).getPokemonInfo(DEFAULT_POKEMON);
+        verify(pokeApiService, times(1)).getPokemonInfo(DEFAULT_POKEMON);
         verify(pokeMapper, never()).fromPokeApiResponseToPokeInfoResponse(any(), any());
     }
 
     @Test
     void findPokemonInfo_genericExceptionFromPokeApi() {
-        when(pokeApiWebClient.getPokemonInfo(DEFAULT_POKEMON))
+        when(pokeApiService.getPokemonInfo(DEFAULT_POKEMON))
                 .thenThrow(new PokeApiGenericException("Error"));
 
         PokeApiGenericException ex = assertThrows(PokeApiGenericException.class, () -> pokeService.findPokemonInfo(DEFAULT_POKEMON));
 
         assertEquals("Internal Error: Error", ex.getMessage());
 
-        verify(pokeApiWebClient, times(1)).getPokemonInfo(DEFAULT_POKEMON);
+        verify(pokeApiService, times(1)).getPokemonInfo(DEFAULT_POKEMON);
         verify(pokeMapper, never()).fromPokeApiResponseToPokeInfoResponse(any(), any());
     }
 
@@ -112,7 +112,7 @@ public class PokeServiceTest {
         PokeInfoResponseDto pokeInfo = getPokeInfoResponse(DEFAULT_POKEMON, DEFAULT_DESCRIPTION, habitat, isLegendary);
         Optional<TranslateResponseDto> translateResponse = Optional.ofNullable(translate);
 
-        when(pokeApiWebClient.getPokemonInfo(DEFAULT_POKEMON))
+        when(pokeApiService.getPokemonInfo(DEFAULT_POKEMON))
                 .thenReturn(mockApiResponse);
         when(pokeMapper.fromPokeApiResponseToPokeInfoResponse(DEFAULT_POKEMON, mockApiResponse))
                 .thenReturn(pokeInfo);
