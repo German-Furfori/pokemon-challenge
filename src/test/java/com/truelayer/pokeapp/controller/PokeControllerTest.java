@@ -187,4 +187,23 @@ public class PokeControllerTest extends PokeappApplicationTests {
                 .andExpect(jsonPath("$.description").exists())
                 .andExpect(jsonPath("$.description").value("description"));
     }
+
+    @Test
+    @SneakyThrows
+    void findPokemonTranslatedInfo_withSeveralCalls_verifyCaches() {
+        given(pokeApiWebClient.getPokemonInfo(any(String.class)))
+                .willReturn(getPokeApiResponse(DEFAULT_DESCRIPTION, DEFAULT_HABITAT, DEFAULT_IS_LEGENDARY),
+                        getPokeApiResponse("Other description", DEFAULT_HABITAT, DEFAULT_IS_LEGENDARY));
+        given(translationWebClient.translate(any(TranslateRequestDto.class), any(String.class)))
+                .willReturn(getTranslationResponse());
+
+        mockMvc.perform(get(pathTranslatedPokemon, DEFAULT_POKEMON));
+        mockMvc.perform(get(pathTranslatedPokemon, DEFAULT_POKEMON));
+        mockMvc.perform(get(pathTranslatedPokemon, "bulbasaur"));
+        mockMvc.perform(get(pathTranslatedPokemon, "bulbasaur"));
+
+        verify(pokeApiWebClient, times(2)).getPokemonInfo(any(String.class));
+        verify(translationWebClient, times(2)).translate(any(TranslateRequestDto.class),
+                any(String.class));
+    }
 }
