@@ -7,6 +7,7 @@ import com.truelayer.pokeapp.service.TranslationService;
 import com.truelayer.pokeapp.webclient.TranslationWebClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public class TranslationServiceImpl implements TranslationService {
     private final TranslationMapper translateMapper;
 
     @Override
+    @Cacheable(value = "translation")
     public Optional<TranslateResponseDto> translate(String text, String path) {
         TranslateRequestDto translateRequest = translateMapper.textToTranslateRequest(text);
         return translationWebClient.translate(translateRequest, path);
